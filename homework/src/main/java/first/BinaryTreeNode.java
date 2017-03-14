@@ -9,15 +9,19 @@ package first;
  */
 public class BinaryTreeNode {
 
-    private Object data;//数据，每个节点保存的数据
+    private Comparable data;//数据，每个节点保存的数据   改为Comparable用以比较大小
     private BinaryTreeNode left;//左节点
     private BinaryTreeNode right;//右节点
 
-    public Object getData() {
+    public BinaryTreeNode(Comparable o, BinaryTreeNode o1, BinaryTreeNode o2) {
+
+    }
+
+    public Comparable getData() {
         return data;
     }
 
-    public void setData(Object data) {
+    public void setData(Comparable data) {
         this.data = data;
     }
 
@@ -37,7 +41,26 @@ public class BinaryTreeNode {
         this.right = right;
     }
 
-    public BinaryTreeNode insert(Object o) {
+    public BinaryTreeNode insert(Comparable o) {
+        BinaryTreeNode insertNode=new BinaryTreeNode(o,null,null);
+        BinaryTreeNode currentNode=this;
+        while ((null!=currentNode)){
+            Comparable data=currentNode.getData();
+            int result=data.compareTo(o);
+            if (result==0){
+                return currentNode;
+            }
+            if (result>0){
+                if (null==currentNode.getLeft()){
+//                    BinaryTreeNode insertNode=new BinaryTreeNode(o,null,null);
+                }
+            }
+            if (result<0){
+                if (null==currentNode.getRight()){
+                    
+                }
+            }
+        }
         return null;
     }
 
