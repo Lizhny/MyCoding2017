@@ -1,4 +1,4 @@
-package second;
+package second.array;
 
 public class ArrayUtil {
 	
