@@ -1,14 +1,11 @@
 package second.litestruts;
 
-import java.lang.reflect.Method;
 import java.util.Map;
-
-
 
 public class Struts {
 
-	
-    public static View runAction(String actionName, Map<String,String> parameters) {
+
+    public static View runAction(String actionName, Map<String, String> parameters) {
 
         /*
          
@@ -29,9 +26,9 @@ public class Struts {
 		放到View对象的jsp字段中。
         
         */
-    	
-    
-    	return null;
-    }    
+
+
+        return null;
+    }
 
 }
