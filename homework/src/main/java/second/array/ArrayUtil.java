@@ -53,29 +53,33 @@ public class ArrayUtil {
      */
 
     public static int[] merge(int[] array1, int[] array2) {
-        if (null == array1 && null == array2) return null;
+        if (null == array1 || null == array2) return null;
         int[] temp = new int[array1.length + array2.length];
         int i = 0, j = 0;
         if (array1.length >= array2.length) {
             while (i < array2.length) {
-                i++;
                 if (array1[i] <= array2[i])
                     temp[i] = array1[i];
                 else
                     temp[i] = array2[i];
+                i++;
             }
-            System.arraycopy(array1, i + 1, temp, i + 1, temp.length - i - 1);
+            System.arraycopy(array1, i - 1, temp, 2 * i - 1, temp.length - 2 * i - 1);
         } else {
-            while (j < array1.length) {
-                j++;
-                if (array1[j] <= array2[j])
+            while (j < array1.length - 1) {
+                if (array1[j] <= array2[j]) {
                     temp[j] = array1[j];
-                else
+                    if (array1[j + 1] > array2[j]) {
+                        temp[j] = array2[j];
+                    }
+                } else
                     temp[j] = array2[j];
+                j++;
+
             }
-            System.arraycopy(array1, j + 1, temp, j + 1, temp.length - j - 1);
+            System.arraycopy(array2, j - 1, temp, 2 * j - 1, temp.length - 2 * j - 1);
         }
-        return null;
+        return temp;
     }
 
     /**
