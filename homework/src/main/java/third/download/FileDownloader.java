@@ -1,5 +1,7 @@
 package third.download;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import third.download.api.Connection;
 import third.download.api.ConnectionException;
 import third.download.api.ConnectionManager;
@@ -7,13 +9,11 @@ import third.download.api.DownloadListener;
 
 
 public class FileDownloader {
-	
-	String url;
-	
-	DownloadListener listener;
-	
-	ConnectionManager cm;
-	
+	private final static int THREAD_NUM=15;
+	private String url;
+	private DownloadListener listener;
+	private ConnectionManager cm;
+	private AtomicInteger atomicInteger=new AtomicInteger();
 
 	public FileDownloader(String _url) {
 		this.url = _url;
@@ -36,12 +36,25 @@ public class FileDownloader {
 		// 下面的代码是示例代码， 也就是说只有一个线程， 你需要改造成多线程的。
 		Connection conn = null;
 		try {
-			
+			int length = cm.getContentLength(url);
+			int perTread_lenth=length/THREAD_NUM;
+			int redundant=length%THREAD_NUM;
+			for (int i=0;i<THREAD_NUM;i++){
+				int startPos=i*perTread_lenth;
+				int endPos=(i+1)*perTread_lenth-1;
+				if (i==THREAD_NUM-1)
+					endPos+=redundant;
+			}
 			conn = cm.open(this.url);
-			
-			int length = conn.getContentLength();	
-			
-			new DownloadThread(conn,0,length-1).start();
+			atomicInteger.getAndIncrement();
+			new DownloadThread(conn, 0, length - 1, new DownloadListener() {
+				@Override
+				public void notifyFinished() {
+					if (atomicInteger.decrementAndGet()==0){
+						listener.notifyFinished();
+					}
+				}
+			}).start();
 			
 		} catch (ConnectionException e) {
 			e.printStackTrace();

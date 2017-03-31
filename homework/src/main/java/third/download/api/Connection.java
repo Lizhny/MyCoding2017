@@ -10,7 +10,7 @@ public interface Connection {
      * @param endPos   结束位置
      * @return 返回的字节数组
      */
-    public byte[] read(int startPos, int endPos) throws IOException;
+    public byte[] read(int startPos, int endPos) throws IOException, ConnectionException;
 
     /**
      * 得到数据内容的长度
@@ -23,4 +23,6 @@ public interface Connection {
      * 关闭连接
      */
     public void close();
+
+    public String getFileName();
 }
