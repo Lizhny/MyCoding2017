@@ -1,5 +1,7 @@
 package third.basic;
 
+import java.util.Objects;
+
 /**
  * ${}
  * Created by spark_lizhy on 2017/3/31.
@@ -11,52 +13,94 @@ public class LinkedList<T> {
     private int mSize = 0;
 
     public void add(T o) {
-        if (null == mHead) {
-            mHead = new Node<T>(o);
-            mCurrent = mHead;
-        } else {
-            Node<T> tmp = new Node<T>(o);
-            mCurrent.next = tmp;
-            mCurrent = tmp;
-        }
+        addLast(o);
         mSize++;
 
     }
 
-    public void add(int index, Object o) {
+    public void add(int index, T o) {
+        checkIndex(index);
 
+        Node<T> next = find(index);
+        Node<T> pre = next.previous;
+        Node<T> current = new Node<>(o, next, pre);
+        next.previous = current;
+        pre.next = current;
+        mSize++;
+
+    }
+
+    private Node<T> find(int index) {
+        Node<T> tra = mHead;
+        if (index < (mSize >> 1)) {
+            for (int i = 0; i <= index; i++) {
+                tra = tra.next;
+            }
+        } else {
+            for (int i = mSize; i > index; i--) {
+                tra = tra.previous;
+            }
+        }
+        return tra;
+    }
+
+    private void checkIndex(int index) {
+        if (index >= mSize || index < 0) {
+            throw new IndexOutOfBoundsException("Index:" + index + " Size:" + mSize);
+        }
     }
 
     public Object get(int index) {
-        return null;
+        checkIndex(index);
+
+        return find(index).data;
     }
 
-    public Object remove(int index) {
-        return null;
+    public T remove(int index) {
+        checkIndex(index);
+        //重链接
+        Node<T> temp = this.find(index);
+        Node<T> next = temp.next;
+        Node<T> pre = temp.previous;
+        pre.next = next;
+        next.previous = pre;
+        //清除数据
+        T removedObject = temp.data;
+        temp.data = null;
+        temp.next = null;
+        temp.previous = null;
+        mSize--;
+        return removedObject;
     }
 
     public int size() {
-        return -1;
+        return mSize;
     }
 
-    public void addFirst(Object o) {
+    public void addFirst(T o) {
+        Node<T> next = mHead.next;
+        Node<T> first = new Node<>(o, next, mHead);
+        next.next = first;
+        next.previous = first;
+        mSize++;
 
     }
 
-    public void addLast(Object o) {
-
+    public void addLast(T o) {
+        Node<T> last = mHead.previous;
+        Node<T> temp = new Node<>(o, mHead, last);
+        mHead.previous = temp;
+        last.next = temp;
+        mSize++;
     }
 
-    public Object removeFirst() {
-        return null;
+    public T removeFirst() {
+        return remove(0);
     }
 
-    public Object removeLast() {
-        return null;
+    public T removeLast() {
+        return remove(mSize - 1);
     }
-//    public Iterator iterator(){
-//        return null;
-//    }
 
 
     /**
@@ -142,11 +186,19 @@ public class LinkedList<T> {
 
     private static class Node<T> {
         T data;
-        Node next;
+        Node<T> next;
+        Node<T> previous;
 
         public Node(T data) {
             this.data = data;
-            this.next = null;
+            this.next = this;
+            this.previous = this;
+        }
+
+        public Node(T data, Node<T> next, Node<T> previous) {
+            this.data = data;
+            this.next = next;
+            this.previous = previous;
         }
     }
 }
